@@ -28,12 +28,11 @@ class DetailFragment : Fragment(R.layout.fragment_detail) {
             city.isFavorite = !city.isFavorite
             btnFav.text = if (city.isFavorite) "⭐ В избранном" else "☆ В избранное"
 
-            // ✅ ИСПРАВЛЕНИЕ: загружаем ВСЕ города, обновляем нужный, сохраняем ВСЕ
             val allCities = PrefsManager.loadCities(requireContext())
             val index = allCities.indexOfFirst { it.name == city.name }
             if (index != -1) {
-                allCities[index] = city  // Обновляем город в списке
-                PrefsManager.saveCities(requireContext(), allCities)  // Сохраняем ВЕСЬ список
+                allCities[index] = city
+                PrefsManager.saveCities(requireContext(), allCities)
             }
 
             Snackbar.make(view,

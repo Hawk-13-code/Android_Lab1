@@ -23,33 +23,27 @@ class ListFragment : Fragment(R.layout.fragment_list) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        // 1. Инициализация RecyclerView
         recyclerView = view.findViewById(R.id.recyclerView)
         recyclerView.layoutManager = GridLayoutManager(requireContext(), 2)
 
-        // 2. Загружаем города ТОЛЬКО если список пуст (первый запуск)
         if (cityList.isEmpty()) {
             cityList.addAll(PrefsManager.loadCities(requireContext()))
-
-            // Если после загрузки всё ещё пусто — добавляем тестовые
-            if (cityList.isEmpty()) {
-                addCity("Москва")
-                addCity("Санкт-Петербург")
-            }
         }
-
         sortCities()
 
-        // 3. Создаём адаптер (нужно каждый раз при создании view!)
         adapter = CityAdapter(cityList,
             onDeleteClick = { city -> confirmDelete(city) },
             onItemClick = { city -> openDetail(city) }
         )
         recyclerView.adapter = adapter
 
-        // 4. Кнопка добавления — вешаем слушатель КАЖДЫЙ раз при создании view!
         view.findViewById<Button>(R.id.btnAddCity).setOnClickListener {
             showAddCityDialog()
+        }
+
+        if (cityList.isEmpty()) {
+            addCity("Москва")
+            addCity("Санкт-Петербург")
         }
     }
 

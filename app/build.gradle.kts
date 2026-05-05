@@ -6,7 +6,7 @@ plugins {
 
 android {
     namespace = "com.example.myapplication"
-    compileSdk = 36  // ✅ Простой синтаксис — это главное исправление!
+    compileSdk = 36
 
     defaultConfig {
         applicationId = "com.example.myapplication"
@@ -38,25 +38,21 @@ android {
 }
 
 dependencies {
-    // Основные зависимости
+
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.material)
     implementation(libs.androidx.activity.ktx)
     implementation(libs.androidx.constraintlayout)
 
-    // RecyclerView и CardView через каталог версий
     implementation(libs.androidx.recyclerview)
     implementation(libs.androidx.cardview)
 
-    // Navigation
     implementation(libs.androidx.navigation.fragment)
     implementation(libs.androidx.navigation.ui)
 
-    // Gson для работы с JSON
     implementation(libs.gson)
 
-    // Тесты
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
