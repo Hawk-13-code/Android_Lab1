@@ -10,7 +10,8 @@ import androidx.recyclerview.widget.RecyclerView
 
 class CityAdapter(
     private var cities: MutableList<City>,
-    private val onDeleteClick: (City) -> Unit
+    private val onDeleteClick: (City) -> Unit,
+    private val onItemClick: (City) -> Unit  // ← НОВОЕ: клик по карточке
 ) : RecyclerView.Adapter<CityAdapter.CityViewHolder>() {
 
     class CityViewHolder(view: View) : RecyclerView.ViewHolder(view) {
@@ -34,9 +35,15 @@ class CityAdapter(
         holder.tvDesc.text = city.description
         holder.imgWeather.setImageResource(city.iconResId)
 
-        holder.btnDelete.setOnClickListener {
-            onDeleteClick(city)
-        }
+        // ✅ Очищаем старые слушатели перед добавлением новых
+        holder.itemView.setOnClickListener(null)
+        holder.btnDelete.setOnClickListener(null)
+
+        // Клик по карточке → детали
+        holder.itemView.setOnClickListener { onItemClick(city) }
+
+        // Кнопка удаления
+        holder.btnDelete.setOnClickListener { onDeleteClick(city) }
     }
 
     override fun getItemCount(): Int = cities.size
