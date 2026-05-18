@@ -1,6 +1,6 @@
 package com.example.myapplication
 import java.io.Serializable
-data class City(
+data class CityOld(
     val name: String,
     val temperature: Int,
     val description: String,

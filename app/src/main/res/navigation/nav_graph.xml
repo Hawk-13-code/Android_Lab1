@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+<navigation
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/nav_graph"
     app:startDestination="@id/listFragment">
@@ -11,16 +12,25 @@
 
         <action
             android:id="@+id/action_list_to_detail"
-            app:destination="@id/detailFragment" />
+            app:destination="@id/detailFragment">
 
+            <argument
+                android:name="city"
+                app:argType="com.example.myapplication.model.CityWeather"
+                app:nullable="false" />
+        </action>
     </fragment>
 
     <fragment
         android:id="@+id/detailFragment"
         android:name="com.example.myapplication.DetailFragment"
         android:label="Детали погоды">
+
+        <!-- ИСПРАВЛЕНО: имя и тип должны совпадать с action -->
         <argument
-            android:name="cityData"
-            app:argType="com.example.myapplication.City" />
+            android:name="city"
+            app:argType="com.example.myapplication.model.CityWeather"
+            app:nullable="false" />
     </fragment>
+
 </navigation>

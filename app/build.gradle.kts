@@ -56,4 +56,17 @@ dependencies {
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
+
+    // Retrofit + Gson (основные)
+    implementation("com.squareup.retrofit2:retrofit:2.11.0")
+    implementation("com.squareup.retrofit2:converter-gson:2.11.0")
+
+    // Kotlin Coroutines
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.9.0")
+
+    // SwipeRefreshLayout (опционально, для обновления свайпом)
+    implementation("androidx.swiperefreshlayout:swiperefreshlayout:1.1.0")
+
+    // Lifecycle ViewModel + Coroutines (если ещё нет)
+    implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.8.7")
 }
