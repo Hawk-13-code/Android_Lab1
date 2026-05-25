@@ -26,7 +26,6 @@
         android:name="com.example.myapplication.DetailFragment"
         android:label="Детали погоды">
 
-        <!-- ИСПРАВЛЕНО: имя и тип должны совпадать с action -->
         <argument
             android:name="city"
             app:argType="com.example.myapplication.model.CityWeather"

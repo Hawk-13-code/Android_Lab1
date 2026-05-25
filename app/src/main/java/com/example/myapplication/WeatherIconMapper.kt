@@ -9,35 +9,25 @@ object WeatherIconMapper {
         val code = iconCode?.lowercase()?.trim() ?: return R.drawable.ic_launcher_foreground
 
         return when {
-            // Ясно
             code in listOf("01d", "01n", "ясно", "солнечно", "clear", "sunny") -> R.drawable.ic_sunny
 
-            // Переменная облачность (добавил все варианты)
             code in listOf("02d", "02n", "переменная облачность", "partly cloudy", "небольшая облачность") -> R.drawable.ic_cloudy
 
-            // Облачно
             code in listOf("03d", "03n", "04d", "04n", "облачно", "cloudy", "пасмурно") -> R.drawable.ic_cloudy
 
-            // Дождь
             code in listOf("09d", "09n", "10d", "10n", "дождь", "небольшой дождь", "rain", "ливень") -> R.drawable.ic_rainy
 
-            // Гроза
             code in listOf("11d", "11n", "гроза", "thunder") -> R.drawable.ic_rainy
 
-            // Снег
             code in listOf("13d", "13n", "снег", "snow") -> R.drawable.ic_snowy
 
-            // Туман
             code in listOf("50d", "50n", "туман", "fog", "дымка") -> R.drawable.ic_foggy
 
-            // Ветер
             code in listOf("wind", "ветер", "ветрено") -> R.drawable.ic_windy
 
             else -> R.drawable.ic_launcher_foreground
         }
     }
-
-    // Метод по описанию (более надёжный)
     @DrawableRes
     fun getIconResIdByDescription(description: String?): Int {
         val desc = description?.lowercase()?.trim() ?: return R.drawable.ic_launcher_foreground

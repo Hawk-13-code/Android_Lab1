@@ -18,7 +18,7 @@ class WeatherViewModel(application: Application) : AndroidViewModel(application)
     private val _isLoading = MutableLiveData<Boolean>()
     val isLoading: LiveData<Boolean> = _isLoading
 
-    fun loadWeather(context: Context) {  // ← Контекст как параметр
+    fun loadWeather(context: Context) {
         viewModelScope.launch {
             _isLoading.value = true
             _error.value = null
@@ -60,7 +60,7 @@ class WeatherViewModel(application: Application) : AndroidViewModel(application)
         return result
     }
 
-    fun removeCity(context: Context, city: CityWeather) {  // ← Контекст как параметр
+    fun removeCity(context: Context, city: CityWeather) {
         val current = _cities.value?.toMutableList() ?: return
         val updated = current.filter { it.id != city.id }
         _cities.value = updated

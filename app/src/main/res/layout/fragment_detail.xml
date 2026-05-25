@@ -6,7 +6,6 @@
     android:orientation="vertical"
     android:padding="16dp">
 
-    <!-- Заголовок с названием города -->
     <TextView
         android:id="@+id/tvCityTitle"
         android:layout_width="wrap_content"
@@ -16,7 +15,6 @@
         android:layout_marginBottom="8dp"
         android:text="Город" />
 
-    <!-- Сегодняшняя погода крупно -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -55,7 +53,6 @@
                 android:text="Ясно" />
         </LinearLayout>
 
-        <!-- Кнопка избранного в detail фрагменте -->
         <ImageButton
             android:id="@+id/btnFavorite"
             android:layout_width="48dp"

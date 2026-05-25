@@ -15,7 +15,6 @@ object PrefsManager {
     private fun getPrefs(context: Context): SharedPreferences =
         context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
 
-    // === СТАРЫЕ МЕТОДЫ ===
     fun saveCities(context: Context, cities: List<CityOld>) {
         val json = Gson().toJson(cities)
         getPrefs(context).edit().putString(KEY_CITIES_OLD, json).apply()
@@ -31,7 +30,6 @@ object PrefsManager {
         }
     }
 
-    // === НОВЫЕ МЕТОДЫ ДЛЯ CityWeather ===
     fun saveCitiesWeather(context: Context, cities: List<CityWeather>) {
         val json = Gson().toJson(cities)
         getPrefs(context).edit().putString(KEY_CITIES_WEATHER, json).apply()
@@ -47,7 +45,6 @@ object PrefsManager {
         }
     }
 
-    // === ИЗБРАННОЕ (НОВОЕ) ===
     fun saveFavorites(context: Context, cityIds: Set<String>) {
         getPrefs(context).edit().putStringSet(KEY_FAVORITES, cityIds).apply()
     }
@@ -73,7 +70,6 @@ object PrefsManager {
         return loadFavorites(context).contains(cityId)
     }
 
-    // === Миграция старых данных ===
     fun migrateOldCities(context: Context): List<CityWeather> {
         val oldCities = loadCities(context)
         return oldCities.map { old ->
@@ -83,7 +79,7 @@ object PrefsManager {
                 forecasts = listOf(
                     com.example.myapplication.model.Forecast(
                         id = "${old.name.hashCode()}_forecast",
-                        date = "2026-01-01",  // ← заменил LocalDate на строку для совместимости
+                        date = "2026-01-01",
                         temperature = old.temperature.toDouble(),
                         description = old.description,
                         icon = "01d"

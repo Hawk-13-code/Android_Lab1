@@ -44,7 +44,6 @@ class CityAdapter(
             ?: WeatherIconMapper.getIconResIdByDescription(todayForecast?.description)
         holder.imgWeather.setImageResource(iconResId)
 
-        // Звёздочка только как индикатор (не кликабельна)
         val isFav = PrefsManager.isFavorite(holder.itemView.context, city.id)
         holder.btnFavorite.setImageResource(
             if (isFav) android.R.drawable.btn_star_big_on
