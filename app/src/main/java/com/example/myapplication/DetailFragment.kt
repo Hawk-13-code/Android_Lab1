@@ -8,20 +8,29 @@ import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.example.myapplication.model.CityWeather
-import com.example.myapplication.model.Forecast
+import com.example.myapplication.ui.ForecastUiItem
+import com.example.myapplication.ui.WeatherViewModel
 import com.google.android.material.snackbar.Snackbar
+import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
 
+@AndroidEntryPoint
 class DetailFragment : Fragment() {
 
-    private var city: CityWeather? = null
+    private val viewModel: WeatherViewModel by viewModels()
+    private var cityId: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
-            city = it.getSerializable("city") as? CityWeather
+            cityId = DetailFragmentArgs.fromBundle(it).cityId
         }
     }
 
@@ -44,28 +53,37 @@ class DetailFragment : Fragment() {
 
         recyclerView.layoutManager = LinearLayoutManager(requireContext())
 
-        city?.let { cityData ->
-            tvCityTitle.text = cityData.name
+        cityId?.let { id ->
+            viewLifecycleOwner.lifecycleScope.launch {
+                viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                    viewModel.getCityDetails(id).collect { forecasts ->
+                        if (forecasts.isNotEmpty()) {
+                            val first = forecasts.first()
 
-            val today = cityData.forecasts.firstOrNull()
-            tvTodayTemp.text = today?.let { "${it.temperature}°C" } ?: "N/A"
-            tvTodayDesc.text = today?.description ?: "Нет данных"
+                            tvCityTitle.text = first.cityName
 
-            val iconResId = WeatherIconMapper.getIconResId(today?.icon)
-                .takeIf { it != R.drawable.ic_launcher_foreground }
-                ?: WeatherIconMapper.getIconResIdByDescription(today?.description)
-            imgTodayIcon.setImageResource(iconResId)
+                            tvTodayTemp.text = "${first.temperature}°C"
+                            tvTodayDesc.text = first.description
 
-            updateFavoriteButton(btnFavorite, cityData.id)
-            btnFavorite.setOnClickListener {
-                val isNowFavorite = PrefsManager.toggleFavorite(requireContext(), cityData.id)
-                updateFavoriteButton(btnFavorite, cityData.id)
-                val action = if (isNowFavorite) "добавлен в" else "убран из"
-                Snackbar.make(view, "Город $action избранное", Snackbar.LENGTH_SHORT).show()
+                            val iconResId = WeatherIconMapper.getIconResId(first.icon)
+                                .takeIf { it != R.drawable.ic_launcher_foreground }
+                                ?: WeatherIconMapper.getIconResIdByDescription(first.description)
+                            imgTodayIcon.setImageResource(iconResId)
+
+                            updateFavoriteButton(btnFavorite, id)
+                            btnFavorite.setOnClickListener {
+                                val isNowFavorite = PrefsManager.toggleFavorite(requireContext(), id)
+                                updateFavoriteButton(btnFavorite, id)
+                                val action = if (isNowFavorite) "добавлен в" else "убран из"
+                                Snackbar.make(view, "Город $action избранное", Snackbar.LENGTH_SHORT).show()
+                            }
+
+                            val adapter = ForecastAdapter(forecasts)
+                            recyclerView.adapter = adapter
+                        }
+                    }
+                }
             }
-
-            val adapter = ForecastAdapter(cityData.forecasts)
-            recyclerView.adapter = adapter
         }
     }
 
@@ -79,7 +97,7 @@ class DetailFragment : Fragment() {
 }
 
 class ForecastAdapter(
-    private val forecasts: List<Forecast>
+    private val forecasts: List<ForecastUiItem>
 ) : RecyclerView.Adapter<ForecastAdapter.ForecastViewHolder>() {
 
     class ForecastViewHolder(view: View) : RecyclerView.ViewHolder(view) {

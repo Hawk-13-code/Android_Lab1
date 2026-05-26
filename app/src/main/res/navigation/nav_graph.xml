@@ -2,21 +2,23 @@
 <navigation
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav_graph"
     app:startDestination="@id/listFragment">
 
     <fragment
         android:id="@+id/listFragment"
         android:name="com.example.myapplication.ListFragment"
-        android:label="Список городов">
+        android:label="Список городов"
+        tools:layout="@layout/fragment_list">
 
         <action
             android:id="@+id/action_list_to_detail"
             app:destination="@id/detailFragment">
 
             <argument
-                android:name="city"
-                app:argType="com.example.myapplication.model.CityWeather"
+                android:name="cityId"
+                app:argType="string"
                 app:nullable="false" />
         </action>
     </fragment>
@@ -24,11 +26,12 @@
     <fragment
         android:id="@+id/detailFragment"
         android:name="com.example.myapplication.DetailFragment"
-        android:label="Детали погоды">
+        android:label="Детали погоды"
+        tools:layout="@layout/fragment_detail">
 
         <argument
-            android:name="city"
-            app:argType="com.example.myapplication.model.CityWeather"
+            android:name="cityId"
+            app:argType="string"
             app:nullable="false" />
     </fragment>
 

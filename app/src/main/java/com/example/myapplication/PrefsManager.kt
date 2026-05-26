@@ -10,7 +10,7 @@ object PrefsManager {
     private const val PREFS_NAME = "weather_prefs"
     private const val KEY_CITIES_OLD = "cities_list"
     private const val KEY_CITIES_WEATHER = "cities_weather"
-    private const val KEY_FAVORITES = "favorite_city_ids"  // ← НОВОЕ
+    private const val KEY_FAVORITES = "favorite_city_ids"
 
     private fun getPrefs(context: Context): SharedPreferences =
         context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
