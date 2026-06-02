@@ -20,5 +20,9 @@ data class DbForecast(
     val temperature: Double,
     val description: String,
     val icon: String,
+    val humidity: Int = 0,
+    val windSpeed: Double = 0.0,
+    val windDirection: Int = 0,
+    val pressure: Int = 0,
     val updatedAt: Long = System.currentTimeMillis()
 )

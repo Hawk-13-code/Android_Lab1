@@ -1,23 +1,25 @@
 package com.example.myapplication.data.repository
 
-import com.example.myapplication.data.local.WeatherDao
+import android.content.Context
+import com.example.myapplication.R
 import com.example.myapplication.data.local.DbCity
 import com.example.myapplication.data.local.DbForecast
+import com.example.myapplication.data.local.WeatherDao
 import com.example.myapplication.model.CityWeather
 import com.example.myapplication.model.Forecast
-import com.example.myapplication.network.WeatherApi
+import com.example.myapplication.model.WeatherResponse
+import com.google.gson.Gson
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
-import java.text.SimpleDateFormat
-import java.util.Date
-import java.util.Locale
 import javax.inject.Inject
 import javax.inject.Singleton
-
+import com.example.myapplication.PrefsManager
+import com.example.myapplication.NotificationHelper
 @Singleton
 class WeatherRepository @Inject constructor(
     private val dao: WeatherDao,
-    private val api: WeatherApi
+    @ApplicationContext private val context: Context
 ) {
     fun getCitiesFlow(): Flow<List<DbCity>> = dao.getAllCities()
 
@@ -31,34 +33,56 @@ class WeatherRepository @Inject constructor(
 
     suspend fun syncWeather() {
         try {
-            val response = api.getWeatherForecast()
+            val jsonString = context.resources.openRawResource(R.raw.weather_data)
+                .bufferedReader().use { it.readText() }
+            val response = Gson().fromJson(jsonString, WeatherResponse::class.java)
 
             val serverCities = response.cities.map { it.toDbCity() }
             val serverForecasts = response.cities.flatMap { city ->
                 city.forecasts.map { it.toDbForecast(city.id) }
             }
 
-            android.util.Log.d("DEBUG_SYNC_IN", "Пришло городов: ${serverCities.size}")
-            android.util.Log.d("DEBUG_SYNC_IN", "Пришло прогнозов: ${serverForecasts.size}")
+
+            val oldForecasts = dao.getAllForecasts().first()
+
+
+            val favoriteCityIds = PrefsManager.loadFavorites(context)
+
+
+            for (cityId in favoriteCityIds) {
+                val oldCityForecasts = oldForecasts.filter { it.cityId == cityId }
+                val newCityForecasts = serverForecasts.filter { it.cityId == cityId }
+
+                for (newForecast in newCityForecasts) {
+                    val oldForecast = oldCityForecasts.find { it.date == newForecast.date }
+                    if (oldForecast != null) {
+                        val tempDiff = kotlin.math.abs(newForecast.temperature - oldForecast.temperature)
+                        if (tempDiff >= 2.0 || oldForecast.description != newForecast.description) {
+                            val cityName = serverCities.find { it.id == cityId }?.name ?: "Неизвестный город"
+                            NotificationHelper.showWeatherChangeNotification(
+                                context,
+                                cityName,
+                                oldForecast.temperature,
+                                newForecast.temperature,
+                                newForecast.description
+                            )
+                        }
+                    }
+                }
+            }
+
 
             val localCities = dao.getAllCities().first()
             val localCityIds = localCities.map { it.id }.toSet()
             val serverCityIds = serverCities.map { it.id }.toSet()
-
             val localOnlyCities = localCities.filter { it.id !in serverCityIds }
             val citiesToSave = serverCities + localOnlyCities
-
             val localForecasts = dao.getAllForecasts().first()
                 .filter { it.cityId in localCityIds && it.cityId !in serverCityIds }
             val forecastsToSave = serverForecasts + localForecasts
 
-            android.util.Log.d("DEBUG_SYNC_SAVE", "Сохраняем городов: ${citiesToSave.size}")
-            android.util.Log.d("DEBUG_SYNC_SAVE", "Сохраняем прогнозов: ${forecastsToSave.size}")
-
             dao.insertCities(citiesToSave)
             dao.insertForecasts(forecastsToSave)
-
-            android.util.Log.d("DEBUG_SYNC_OUT", " Успешно сохранено!")
 
         } catch (e: Exception) {
             android.util.Log.e("DEBUG_SYNC_ERR", "Ошибка: ${e.message}", e)
@@ -74,10 +98,8 @@ class WeatherRepository @Inject constructor(
         val availableDates = existingForecasts.map { it.date }.distinct().sorted()
 
         val forecastDates = if (availableDates.size >= 3) {
-
             availableDates.take(3)
         } else {
-
             listOf("2026-04-06", "2026-04-07", "2026-04-08")
         }
 
@@ -85,8 +107,6 @@ class WeatherRepository @Inject constructor(
 
         dao.insertCities(listOf(dbCity))
         dao.insertForecasts(forecasts)
-
-        android.util.Log.d("DEBUG_ADD", " Город добавлен: $name (ID: $cityId, даты: $forecastDates)")
     }
 
     private fun generateRandomForecasts(cityId: String, dates: List<String>): List<DbForecast> {
@@ -106,14 +126,17 @@ class WeatherRepository @Inject constructor(
                 desc == "Снег" -> (-10..0).random()
                 else -> (5..20).random()
             }
-
             DbForecast(
                 id = "${cityId}_$index",
                 cityId = cityId,
                 date = date,
                 temperature = temp.toDouble(),
                 description = desc,
-                icon = icon
+                icon = icon,
+                humidity = (40..90).random(),
+                windSpeed = (0..15).random().toDouble(),
+                windDirection = (0..360).random(),
+                pressure = (980..1030).random()
             )
         }
     }
@@ -121,7 +144,6 @@ class WeatherRepository @Inject constructor(
     fun getForecastsByCity(cityId: String): Flow<List<DbForecast>> {
         return dao.getForecastsByCity(cityId)
     }
-
 
     suspend fun removeCity(cityId: String) {
         dao.deleteForecastsByCity(cityId)
@@ -136,5 +158,9 @@ fun Forecast.toDbForecast(cityId: String) = DbForecast(
     date = date,
     temperature = temperature,
     description = description,
-    icon = icon
+    icon = icon,
+    humidity = humidity,
+    windSpeed = windSpeed,
+    windDirection = windDirection,
+    pressure = pressure
 )

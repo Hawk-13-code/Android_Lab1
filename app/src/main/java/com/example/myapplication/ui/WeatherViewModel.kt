@@ -54,7 +54,11 @@ class WeatherViewModel @Inject constructor(
                             date = forecast.date,
                             temperature = forecast.temperature,
                             description = forecast.description,
-                            icon = forecast.icon
+                            icon = forecast.icon,
+                            humidity = forecast.humidity,
+                            windSpeed = forecast.windSpeed,
+                            windDirection = forecast.windDirection,
+                            pressure = forecast.pressure
                         )
                     }
                 }
@@ -79,6 +83,7 @@ class WeatherViewModel @Inject constructor(
                 }
         }
     }
+
     fun getCityDetails(cityId: String): Flow<List<ForecastUiItem>> {
         return combine(
             repository.getCitiesFlow(),
@@ -94,12 +99,17 @@ class WeatherViewModel @Inject constructor(
                         date = forecast.date,
                         temperature = forecast.temperature,
                         description = forecast.description,
-                        icon = forecast.icon
+                        icon = forecast.icon,
+                        humidity = forecast.humidity,
+                        windSpeed = forecast.windSpeed,
+                        windDirection = forecast.windDirection,
+                        pressure = forecast.pressure
                     )
                 }
             }.sortedBy { it.date }
         }
     }
+
     fun syncData() {
         viewModelScope.launch {
             _uiState.value = WeatherUiState.Loading
@@ -135,7 +145,11 @@ data class ForecastUiItem(
     val date: String,
     val temperature: Double,
     val description: String,
-    val icon: String
+    val icon: String,
+    val humidity: Int = 0,
+    val windSpeed: Double = 0.0,
+    val windDirection: Int = 0,
+    val pressure: Int = 0
 )
 
 sealed class WeatherUiState {

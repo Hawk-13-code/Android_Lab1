@@ -76,16 +76,15 @@ class ListFragment : Fragment(R.layout.fragment_list) {
                         }
                         is WeatherUiState.Success -> {
                             swipeRefresh.isRefreshing = false
-
                             val sortedByFavorite = state.data.sortedByDescending { item ->
                                 PrefsManager.isFavorite(requireContext(), item.cityId)
                             }
-
                             val uniqueItems = sortedByFavorite.distinctBy { it.cityId }
 
-                            adapter.submitList(uniqueItems)
-
-                            updateCitySpinner(state.data)
+                            recyclerView.animate().alpha(0f).setDuration(150).withEndAction {
+                                adapter.submitList(uniqueItems)
+                                recyclerView.animate().alpha(1f).setDuration(300).start()
+                            }.start()
                         }
                         is WeatherUiState.Error -> {
                             swipeRefresh.isRefreshing = false
@@ -177,7 +176,6 @@ class ListFragment : Fragment(R.layout.fragment_list) {
             override fun onNothingSelected(parent: AdapterView<*>) {}
         }
 
-        // Синхронизируем спиннер с ViewModel
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.selectedDayIndex.collect { dayIndex ->

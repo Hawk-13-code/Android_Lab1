@@ -3,8 +3,6 @@ package com.example.myapplication.di
 import android.content.Context
 import androidx.room.Room
 import com.example.myapplication.data.local.WeatherDatabase
-import com.example.myapplication.network.RetrofitClient
-import com.example.myapplication.network.WeatherApi
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -31,7 +29,5 @@ object AppModule {
     @Provides
     fun provideWeatherDao(database: WeatherDatabase) = database.weatherDao()
 
-    @Provides
-    @Singleton
-    fun provideWeatherApi() = RetrofitClient.instance
+
 }

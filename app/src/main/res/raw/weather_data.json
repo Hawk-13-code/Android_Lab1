@@ -1,0 +1,121 @@
+{
+  "cities": [
+    {
+      "id": "msk_1",
+      "name": "Москва",
+      "forecasts": [
+        {
+          "id": "msk_1_day1",
+          "date": "2026-06-03",
+          "temperature": 23.5,
+          "description": "Солнечно",
+          "icon": "01d",
+          "humidity": 55,
+          "wind_speed": 3.2,
+          "wind_deg": 180,
+          "pressure": 1012
+        },
+        {
+          "id": "msk_1_day2",
+          "date": "2026-06-04",
+          "temperature": 19.0,
+          "description": "Небольшой дождь",
+          "icon": "10d",
+          "humidity": 78,
+          "wind_speed": 5.1,
+          "wind_deg": 200,
+          "pressure": 1005
+        },
+        {
+          "id": "msk_1_day3",
+          "date": "2026-06-05",
+          "temperature": 17.5,
+          "description": "Облачно",
+          "icon": "03d",
+          "humidity": 68,
+          "wind_speed": 4.0,
+          "wind_deg": 150,
+          "pressure": 1008
+        }
+      ]
+    },
+    {
+      "id": "spb_1",
+      "name": "Санкт-Петербург",
+      "forecasts": [
+        {
+          "id": "spb_1_day1",
+          "date": "2026-06-03",
+          "temperature": 15.2,
+          "description": "Пасмурно",
+          "icon": "04d",
+          "humidity": 82,
+          "wind_speed": 6.0,
+          "wind_deg": 250,
+          "pressure": 1000
+        },
+        {
+          "id": "spb_1_day2",
+          "date": "2026-06-04",
+          "temperature": 15.0,
+          "description": "Дождь",
+          "icon": "10d",
+          "humidity": 89,
+          "wind_speed": 7.2,
+          "wind_deg": 270,
+          "pressure": 998
+        },
+        {
+          "id": "spb_1_day3",
+          "date": "2026-06-05",
+          "temperature": 14.0,
+          "description": "Ветрено",
+          "icon": "wind",
+          "humidity": 75,
+          "wind_speed": 8.5,
+          "wind_deg": 300,
+          "pressure": 1002
+        }
+      ]
+    },
+    {
+      "id": "nsb_1",
+      "name": "Новосибирск",
+      "forecasts": [
+        {
+          "id": "nsb_1_day1",
+          "date": "2026-06-03",
+          "temperature": 12.0,
+          "description": "Снег",
+          "icon": "13d",
+          "humidity": 85,
+          "wind_speed": 4.5,
+          "wind_deg": 30,
+          "pressure": 1015
+        },
+        {
+          "id": "nsb_1_day2",
+          "date": "2026-06-04",
+          "temperature": 10.5,
+          "description": "Снег с дождём",
+          "icon": "13d",
+          "humidity": 88,
+          "wind_speed": 5.0,
+          "wind_deg": 45,
+          "pressure": 1013
+        },
+        {
+          "id": "nsb_1_day3",
+          "date": "2026-06-05",
+          "temperature": 14.0,
+          "description": "Солнечно",
+          "icon": "01d",
+          "humidity": 60,
+          "wind_speed": 2.5,
+          "wind_deg": 120,
+          "pressure": 1020
+        }
+      ]
+    }
+  ]
+}

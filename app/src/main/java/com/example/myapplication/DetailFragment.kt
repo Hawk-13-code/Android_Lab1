@@ -51,6 +51,11 @@ class DetailFragment : Fragment() {
         val btnFavorite = view.findViewById<ImageButton>(R.id.btnFavorite)
         val recyclerView = view.findViewById<RecyclerView>(R.id.recyclerViewForecast)
 
+        val tvHumidity = view.findViewById<TextView>(R.id.tvHumidity)
+        val tvWind = view.findViewById<TextView>(R.id.tvWind)
+        val tvWindDir = view.findViewById<TextView>(R.id.tvWindDir)
+        val tvPressure = view.findViewById<TextView>(R.id.tvPressure)
+
         recyclerView.layoutManager = LinearLayoutManager(requireContext())
 
         cityId?.let { id ->
@@ -61,9 +66,14 @@ class DetailFragment : Fragment() {
                             val first = forecasts.first()
 
                             tvCityTitle.text = first.cityName
-
                             tvTodayTemp.text = "${first.temperature}°C"
                             tvTodayDesc.text = first.description
+
+
+                            tvHumidity.text = "${first.humidity}%"
+                            tvWind.text = "${first.windSpeed} м/с"
+                            tvWindDir.text = getWindDirection(first.windDirection)
+                            tvPressure.text = "${first.pressure} гПа"
 
                             val iconResId = WeatherIconMapper.getIconResId(first.icon)
                                 .takeIf { it != R.drawable.ic_launcher_foreground }
@@ -94,6 +104,20 @@ class DetailFragment : Fragment() {
             else android.R.drawable.btn_star_big_off
         )
     }
+
+    private fun getWindDirection(degrees: Int): String {
+        return when (degrees) {
+            in 0..22 -> "С"
+            in 23..67 -> "СВ"
+            in 68..112 -> "В"
+            in 113..157 -> "ЮВ"
+            in 158..202 -> "Ю"
+            in 203..247 -> "ЮЗ"
+            in 248..292 -> "З"
+            in 293..337 -> "СЗ"
+            else -> "С"
+        }
+    }
 }
 
 class ForecastAdapter(
@@ -123,6 +147,8 @@ class ForecastAdapter(
             .takeIf { it != R.drawable.ic_launcher_foreground }
             ?: WeatherIconMapper.getIconResIdByDescription(forecast.description)
         holder.imgIcon.setImageResource(iconResId)
+        holder.itemView.alpha = 0f
+        holder.itemView.animate().alpha(1f).setDuration(300).start()
     }
 
     override fun getItemCount(): Int = forecasts.size
