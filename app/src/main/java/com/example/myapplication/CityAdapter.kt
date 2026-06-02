@@ -54,8 +54,12 @@ class CityAdapter(
 
         holder.itemView.setOnClickListener { onItemClick(item) }
         holder.btnDelete.setOnClickListener { onDeleteClick(item) }
+
+
         holder.itemView.alpha = 0f
         holder.itemView.animate().alpha(1f).setDuration(300).start()
+
+
     }
 
     override fun getItemCount(): Int = items.size

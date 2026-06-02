@@ -129,6 +129,11 @@ class ForecastAdapter(
         val tvTemp: TextView = view.findViewById(R.id.tvTemp)
         val tvDesc: TextView = view.findViewById(R.id.tvDesc)
         val imgIcon: ImageView = view.findViewById(R.id.imgIcon)
+        // Новые поля
+        val tvHumidity: TextView = view.findViewById(R.id.tvHumidity)
+        val tvWind: TextView = view.findViewById(R.id.tvWind)
+        val tvWindDir: TextView = view.findViewById(R.id.tvWindDir)
+        val tvPressure: TextView = view.findViewById(R.id.tvPressure)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ForecastViewHolder {
@@ -143,13 +148,30 @@ class ForecastAdapter(
         holder.tvTemp.text = "${forecast.temperature}°C"
         holder.tvDesc.text = forecast.description
 
+        holder.tvHumidity.text = "💧 ${forecast.humidity}%"
+        holder.tvWind.text = "💨 ${forecast.windSpeed} м/с"
+        holder.tvWindDir.text = "🧭 ${getWindDirection(forecast.windDirection)}"
+        holder.tvPressure.text = "📊 ${forecast.pressure} гПа"
+
         val iconResId = WeatherIconMapper.getIconResId(forecast.icon)
             .takeIf { it != R.drawable.ic_launcher_foreground }
             ?: WeatherIconMapper.getIconResIdByDescription(forecast.description)
         holder.imgIcon.setImageResource(iconResId)
-        holder.itemView.alpha = 0f
-        holder.itemView.animate().alpha(1f).setDuration(300).start()
     }
 
     override fun getItemCount(): Int = forecasts.size
+}
+
+private fun getWindDirection(degrees: Int): String {
+    return when (degrees) {
+        in 0..22 -> "С"
+        in 23..67 -> "СВ"
+        in 68..112 -> "В"
+        in 113..157 -> "ЮВ"
+        in 158..202 -> "Ю"
+        in 203..247 -> "ЮЗ"
+        in 248..292 -> "З"
+        in 293..337 -> "СЗ"
+        else -> "С"
+    }
 }

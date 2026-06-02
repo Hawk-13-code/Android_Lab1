@@ -14,7 +14,6 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.MyApplication">
-        <!-- INTERNET, если нужен, тоже оставить -->
         <activity
             android:name=".MainActivity"
             android:exported="true">

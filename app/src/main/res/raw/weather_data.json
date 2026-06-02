@@ -46,10 +46,10 @@
         {
           "id": "spb_1_day1",
           "date": "2026-06-03",
-          "temperature": 15.2,
+          "temperature": 10.2,
           "description": "Пасмурно",
           "icon": "04d",
-          "humidity": 82,
+          "humidity": 80,
           "wind_speed": 6.0,
           "wind_deg": 250,
           "pressure": 1000
